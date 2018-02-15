@@ -5,7 +5,7 @@
   "scripts": {
     "autogypi": "autogypi",
     "node-gyp": "node-gyp",
-    "submodules": "git submodule update --init --recursive",
+    "submodules": "git clone --branch noboost --depth=1 https://github.com/TanninOne/modorganizer-esptk esptk",
     "install": "npm run submodules && autogypi && node-gyp configure --msvs_version=2015 build"
   },
   "author": "Black Tree Gaming Ltd.",
