@@ -1,0 +1,4 @@
+[submodule "esptk"]
+	path = esptk
+	url = https://github.com/TanninOne/modorganizer-esptk
+  branch = noboost
