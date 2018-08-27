@@ -1,7 +1,7 @@
 {
   "name": "esptk",
-  "version": "1.1.0",
-  "description": "read information from gamebryo esp/esm files (very basic)",
+  "version": "1.2.0",
+  "description": "read information from gamebryo esp/esm/esl files (very basic)",
   "scripts": {
     "autogypi": "autogypi",
     "node-gyp": "node-gyp",

@@ -6,6 +6,7 @@
 class ESPFile {
 private:
   bool m_IsMaster;
+  bool m_IsLight;
   bool m_IsDummy;
   std::string m_Author;
   std::string m_Description;
@@ -15,6 +16,7 @@ public:
   ESPFile(const std::string &fileName) {
     ESP::File wrapped(fileName);
     m_IsMaster = wrapped.isMaster();
+    m_IsLight = wrapped.isLight();
     m_IsDummy = wrapped.isDummy();
     m_Author = wrapped.author();
     m_Description = wrapped.description();
@@ -24,6 +26,7 @@ public:
   }
 
   bool isMaster() const { return m_IsMaster; }
+  bool isLight() const { return m_IsLight; }
   bool isDummy() const { return m_IsDummy; }
   std::string author() const { return m_Author; }
   std::string description() const { return m_Description; }
@@ -34,6 +37,7 @@ public:
 NBIND_CLASS(ESPFile) {
   construct<std::string>();
   getter(isMaster);
+  getter(isLight);
   getter(isDummy);
   getter(author);
   getter(description);

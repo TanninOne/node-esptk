@@ -1,6 +1,18 @@
 {
     "files.associations": {
         "*.ksy": "yaml",
-        "xstring": "cpp"
+        "xstring": "cpp",
+        "ios": "cpp",
+        "array": "cpp",
+        "bitset": "cpp",
+        "deque": "cpp",
+        "initializer_list": "cpp",
+        "list": "cpp",
+        "queue": "cpp",
+        "type_traits": "cpp",
+        "vector": "cpp",
+        "xhash": "cpp",
+        "xtree": "cpp",
+        "xutility": "cpp"
     }
 }
