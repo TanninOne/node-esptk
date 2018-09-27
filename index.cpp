@@ -1,5 +1,6 @@
 #include "esptk/src/espfile.h"
 #include "nbind/nbind.h"
+#include "string_cast.h"
 #include <vector>
 #include <string>
 
@@ -14,7 +15,7 @@ private:
 
 public:
   ESPFile(const std::string &fileName) {
-    ESP::File wrapped(fileName);
+    ESP::File wrapped(toWC(fileName.c_str(), CodePage::UTF8, fileName.size()));
     m_IsMaster = wrapped.isMaster();
     m_IsLight = wrapped.isLight();
     m_IsDummy = wrapped.isDummy();
