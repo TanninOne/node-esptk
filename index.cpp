@@ -3,9 +3,11 @@
 #include "string_cast.h"
 #include <vector>
 #include <string>
+#include <filesystem>
 
 class ESPFile {
 private:
+  std::wstring m_FileName;
   bool m_IsMaster;
   bool m_IsLight;
   bool m_IsDummy;
@@ -14,8 +16,10 @@ private:
   std::vector<std::string> m_Masters;
 
 public:
-  ESPFile(const std::string &fileName) {
-    ESP::File wrapped(toWC(fileName.c_str(), CodePage::UTF8, fileName.size()));
+  ESPFile(const std::string &fileName)
+    : m_FileName(toWC(fileName.c_str(), CodePage::UTF8, fileName.size()))
+  {
+    ESP::File wrapped(m_FileName);
     m_IsMaster = wrapped.isMaster();
     m_IsLight = wrapped.isLight();
     m_IsDummy = wrapped.isDummy();
@@ -24,6 +28,15 @@ public:
 
     std::set<std::string> input = wrapped.masters();
     std::copy(input.begin(), input.end(), std::back_inserter(m_Masters));
+  }
+  
+  void setLightFlag(bool enable) {
+    {
+      ESP::File file(m_FileName);
+      file.setLight(enable);
+      file.write(m_FileName + L".tmp");
+    }
+    std::filesystem::rename(m_FileName + L".tmp", m_FileName);
   }
 
   bool isMaster() const { return m_IsMaster; }
@@ -37,6 +50,7 @@ public:
 
 NBIND_CLASS(ESPFile) {
   construct<std::string>();
+  method(setLightFlag);
   getter(isMaster);
   getter(isLight);
   getter(isDummy);

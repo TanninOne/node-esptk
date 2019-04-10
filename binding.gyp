@@ -13,10 +13,18 @@
             ],
             'cflags!': ['-fno-exceptions'],
             'cflags_cc!': ['-fno-exceptions'],
+            'msbuild_settings': {
+              'ClCompile': {
+                'AdditionalOptions': ['-std:c++17']
+              }
+            },
             'conditions': [
                 ['OS=="win"', {
                     'defines!': [
                         '_HAS_EXCEPTIONS=0'
+                    ],
+                    'defines': [
+                        'BUILDING_NODE_EXTENSION',
                     ],
                     'msvs_settings': {
                         'VCCLCompilerTool': {
