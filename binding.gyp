@@ -26,6 +26,9 @@
                     'defines': [
                         'BUILDING_NODE_EXTENSION',
                     ],
+                    'libraries': [
+                      '-DelayLoad:node.exe',
+                    ],
                     'msvs_settings': {
                         'VCCLCompilerTool': {
                             'ExceptionHandling': 1,
