@@ -11,6 +11,7 @@ private:
   bool m_IsMaster;
   bool m_IsLight;
   bool m_IsDummy;
+  uint32_t m_Revision;
   std::string m_Author;
   std::string m_Description;
   std::vector<std::string> m_Masters;
@@ -25,6 +26,7 @@ public:
     m_IsDummy = wrapped.isDummy();
     m_Author = wrapped.author();
     m_Description = wrapped.description();
+    m_Revision = wrapped.revision();
 
     std::set<std::string> input = wrapped.masters();
     std::copy(input.begin(), input.end(), std::back_inserter(m_Masters));
@@ -46,6 +48,7 @@ public:
   std::string description() const { return m_Description; }
   std::vector<std::string> masters() const { return m_Masters; }
   std::vector<std::string> masterList() const { return m_Masters; }
+  float revision() const { return m_Revision; }
 };
 
 NBIND_CLASS(ESPFile) {
@@ -58,4 +61,5 @@ NBIND_CLASS(ESPFile) {
   getter(description);
   getter(masters);
   getter(masterList);
+  getter(revision);
 }
