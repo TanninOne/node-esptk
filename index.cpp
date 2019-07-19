@@ -1,13 +1,22 @@
 #include "esptk/src/espfile.h"
 #include "nbind/nbind.h"
-#include "string_cast.h"
 #include <vector>
 #include <string>
+#if defined(_WIN32) || defined(_WIN64)
+#include "string_cast.h"
 #include <filesystem>
+#else
+#include <experimental/filesystem>
+namespace fs = std::experimental::filesystem;
+#endif
 
 class ESPFile {
 private:
+#if defined(_WIN32) || defined(_WIN64)
   std::wstring m_FileName;
+#else
+  std::string m_FileName;
+#endif
   bool m_IsMaster;
   bool m_IsLight;
   bool m_IsDummy;
@@ -17,8 +26,13 @@ private:
   std::vector<std::string> m_Masters;
 
 public:
+  
   ESPFile(const std::string &fileName)
+#if !defined(_WIN32) || !defined(_WIN64)
+    : m_FileName(fileName.c_str())
+#else
     : m_FileName(toWC(fileName.c_str(), CodePage::UTF8, fileName.size()))
+#endif
   {
     ESP::File wrapped(m_FileName);
     m_IsMaster = wrapped.isMaster();
@@ -36,9 +50,17 @@ public:
     {
       ESP::File file(m_FileName);
       file.setLight(enable);
+#if !defined(_WIN32) || !defined(_WIN64)
+      file.write(m_FileName + ".tmp");
+#else
       file.write(m_FileName + L".tmp");
+#endif
     }
+#if !defined(_WIN32) || !defined(_WIN64)
+    fs::rename(m_FileName + ".tmp", m_FileName);
+#else
     std::filesystem::rename(m_FileName + L".tmp", m_FileName);
+#endif
   }
 
   bool isMaster() const { return m_IsMaster; }
