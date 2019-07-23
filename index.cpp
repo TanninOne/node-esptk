@@ -2,17 +2,22 @@
 #include "nbind/nbind.h"
 #include <vector>
 #include <string>
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(_WIN32)
 #include "string_cast.h"
 #include <filesystem>
+namespace fs = std::filesystem;
+
+const std::wstring exstring = L".tmp";
 #else
 #include <experimental/filesystem>
 namespace fs = std::experimental::filesystem;
+
+const std::string exstring = ".tmp";
 #endif
 
 class ESPFile {
 private:
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(_WIN32)
   std::wstring m_FileName;
 #else
   std::string m_FileName;
@@ -28,10 +33,10 @@ private:
 public:
   
   ESPFile(const std::string &fileName)
-#if !defined(_WIN32) || !defined(_WIN64)
-    : m_FileName(fileName.c_str())
-#else
+#if defined(_WIN32)
     : m_FileName(toWC(fileName.c_str(), CodePage::UTF8, fileName.size()))
+#else
+    : m_FileName(fileName.c_str())
 #endif
   {
     ESP::File wrapped(m_FileName);
@@ -50,17 +55,9 @@ public:
     {
       ESP::File file(m_FileName);
       file.setLight(enable);
-#if !defined(_WIN32) || !defined(_WIN64)
-      file.write(m_FileName + ".tmp");
-#else
-      file.write(m_FileName + L".tmp");
-#endif
+      file.write(m_FileName + exstring);
     }
-#if !defined(_WIN32) || !defined(_WIN64)
-    fs::rename(m_FileName + ".tmp", m_FileName);
-#else
-    std::filesystem::rename(m_FileName + L".tmp", m_FileName);
-#endif
+    fs::rename(m_FileName + exstring, m_FileName);
   }
 
   bool isMaster() const { return m_IsMaster; }
