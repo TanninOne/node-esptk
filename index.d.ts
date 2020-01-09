@@ -8,6 +8,7 @@ declare module 'esptk' {
     author: string;
     description: string;
     masterList: string[];
+    revision: number;
   }
   export default ESPFile;
 }

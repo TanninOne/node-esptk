@@ -12,7 +12,7 @@
   "license": "GPL-3.0",
   "dependencies": {
     "autogypi": "^0.2.2",
-    "nbind": "^0.3.15",
-    "node-gyp": "^5.0.0"
+    "nbind": "TanninOne/nbind",
+    "node-gyp": "^6.1.0"
   }
 }
