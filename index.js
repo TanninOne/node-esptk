@@ -1,3 +1,5 @@
+Object.defineProperty(exports, "__esModule", { value: true });
+
 const nbind = require('nbind');
 const path = require('path');
 const esptk = nbind.init(path.join(__dirname, 'esptk')).lib;
