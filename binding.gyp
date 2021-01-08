@@ -9,6 +9,7 @@
                 "esptk/src/espfile.cpp",
                 "esptk/src/record.cpp",
                 "esptk/src/subrecord.cpp",
+                "string_cast.cpp",
                 "index.cpp"
             ],
             'cflags!': ['-fno-exceptions'],
