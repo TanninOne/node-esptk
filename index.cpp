@@ -116,7 +116,6 @@ private:
       throw Napi::Error::New(env, e.what());
     };
   }
-
 };
 
 Napi::Object InitAll(Napi::Env env, Napi::Object exports) {
