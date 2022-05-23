@@ -4,9 +4,46 @@
 #include <string>
 #include "string_cast.h"
 #include <filesystem>
+#include "esptk/src/espexceptions.h"
+
 namespace fs = std::filesystem;
 
 const std::wstring exstring = L".tmp";
+
+void rethrow(const Napi::Env &env, const std::string &filePath, const std::exception &e) {
+  napi_value err;
+  napi_status s = napi_create_error(
+    env,
+    Napi::String::New(env, "UNKNOWN"),
+    Napi::String::New(env, e.what()),
+    &err);
+
+  if (s != napi_ok) {
+    throw Napi::Error::New(env, e.what());
+  }
+
+  napi_set_property(env, err, Napi::String::New(env, "path"), Napi::String::New(env, filePath.c_str()));
+
+  try {
+    throw;
+  }
+  catch (const ESP::FileMissingException& e) {
+    napi_set_property(env, err, Napi::String::New(env, "name"), Napi::String::New(env, "FileMissingError"));
+    napi_set_property(env, err, Napi::String::New(env, "code"), Napi::String::New(env, "ENOENT"));
+  }
+  catch (const ESP::InvalidRecordException& e) {
+    napi_set_property(env, err, Napi::String::New(env, "name"), Napi::String::New(env, "InvalidRecordError"));
+    napi_set_property(env, err, Napi::String::New(env, "code"), Napi::String::New(env, "EINVAL"));
+  }
+  catch (const ESP::InvalidFileException& e) {
+    napi_set_property(env, err, Napi::String::New(env, "name"), Napi::String::New(env, "InvalidFileError"));
+    napi_set_property(env, err, Napi::String::New(env, "code"), Napi::String::New(env, "EINVAL"));
+  }
+  catch (const std::exception& e) {
+    // nop
+  }
+  napi_throw(env, err);
+}
 
 class ESPFile : public Napi::ObjectWrap<ESPFile> {
 private:
@@ -67,7 +104,7 @@ public:
       fs::rename(m_FileName + exstring, m_FileName);
     }
     catch (const std::exception& e) {
-      throw Napi::Error::New(info.Env(), e.what());
+      rethrow(info.Env(), toMB(m_FileName.c_str(), CodePage::UTF8, m_FileName.length()), e);
     }
 
     return info.Env().Undefined();
@@ -113,7 +150,8 @@ private:
       std::copy(input.begin(), input.end(), std::back_inserter(m_Masters));
     }
     catch (const std::exception& e) {
-      throw Napi::Error::New(env, e.what());
+      rethrow(env, toMB(m_FileName.c_str(), CodePage::UTF8, m_FileName.length()), e);
+      // throw Napi::Error::New(env, e.what());
     };
   }
 };
