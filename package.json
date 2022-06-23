@@ -1,18 +1,31 @@
 {
   "name": "esptk",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "read information from gamebryo esp/esm/esl files (very basic)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Nexus-Mods/node-esptk.git"
+  },
   "scripts": {
     "autogypi": "autogypi",
     "node-gyp": "node-gyp",
+    "upload": "prebuild.cmd -r napi -t 4 -a x64 --prepack codesign",
     "submodules": "git clone --branch noboost --depth=1 https://github.com/TanninOne/modorganizer-esptk esptk || exit /b 0",
-    "install": "npm run submodules && autogypi && node-gyp configure build"
+    "rebuild": "npm run submodules && autogypi && node-gyp configure build",
+    "install": "prebuild-install -r napi -t 4 -a x64 || npm run rebuild"
+  },
+  "binary": {
+    "napi_versions": [4]
   },
   "author": "Black Tree Gaming Ltd.",
   "license": "GPL-3.0",
+  "devDependencies": {
+    "prebuild": "^11.0.3"
+  },
   "dependencies": {
     "autogypi": "^0.2.2",
     "node-addon-api": "^4.0.0",
-    "node-gyp": "^7.1.2"
+    "node-gyp": "^9.0.0",
+    "prebuild-install": "7.1.0"
   }
 }
