@@ -8,7 +8,11 @@
 
 namespace fs = std::filesystem;
 
+#ifdef WIN32
 const std::wstring exstring = L".tmp";
+#else
+const std::string exstring = ".tmp";
+#endif
 
 void rethrow(const Napi::Env &env, const std::string &filePath, const std::exception &e) {
   napi_value err;
@@ -27,10 +31,12 @@ void rethrow(const Napi::Env &env, const std::string &filePath, const std::excep
   try {
     throw;
   }
+#ifdef _WIN32
   catch (const ESP::FileMissingException& e) {
     napi_set_property(env, err, Napi::String::New(env, "name"), Napi::String::New(env, "FileMissingError"));
     napi_set_property(env, err, Napi::String::New(env, "code"), Napi::String::New(env, "ENOENT"));
   }
+#endif
   catch (const ESP::InvalidRecordException& e) {
     napi_set_property(env, err, Napi::String::New(env, "name"), Napi::String::New(env, "InvalidRecordError"));
     napi_set_property(env, err, Napi::String::New(env, "code"), Napi::String::New(env, "EINVAL"));
@@ -47,7 +53,7 @@ void rethrow(const Napi::Env &env, const std::string &filePath, const std::excep
 
 class ESPFile : public Napi::ObjectWrap<ESPFile> {
 private:
-#if defined(_WIN32)
+#ifdef _WIN32
   std::wstring m_FileName;
 #else
   std::string m_FileName;
@@ -132,11 +138,7 @@ private:
   void setFileName(const Napi::Env &env, const std::string &fileName)
   {
     try {
-#if defined(_WIN32)
       m_FileName = toWC(fileName.c_str(), CodePage::UTF8, fileName.size());
-#else
-      m_FileName = fileName.c_str();
-#endif
 
       ESP::File wrapped(m_FileName);
       m_IsMaster = wrapped.isMaster();
