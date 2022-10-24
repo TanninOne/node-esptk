@@ -1,4 +1,5 @@
 #include "string_cast.h"
+#ifdef _WIN32
 #include <stdexcept>
 
 UINT windowsCP(CodePage codePage)
@@ -69,3 +70,11 @@ std::string toMB(const wchar_t * const &source, CodePage codePage, size_t source
 
   return result;
 }
+#else // WIN32
+std::string toWC(const char * const &source, CodePage codePage, size_t sourceLength) {
+  return source;
+}
+std::string toMB(const char * const &source, CodePage codePage, size_t sourceLength) {
+  return source;
+}
+#endif // non-WIN
